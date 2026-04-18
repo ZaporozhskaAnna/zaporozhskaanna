@@ -477,3 +477,61 @@ if (openNailsVideo && nailsVideoModal && closeNailsVideo && nailsVideo) {
     }
   });
 }
+
+const productModal = document.getElementById("productModal");
+const closeProductModal = document.getElementById("closeProductModal");
+const productModalTitle = document.getElementById("productModalTitle");
+const productModalLabel = document.getElementById("productModalLabel");
+const productModalContent = document.getElementById("productModalContent");
+const productModalTriggers = document.querySelectorAll(
+  ".product-modal-trigger",
+);
+
+function formatModalText(text) {
+  return text
+    .split("\n\n")
+    .map((paragraph) => `<p>${paragraph.trim()}</p>`)
+    .join("");
+}
+
+function openProductModal(trigger) {
+  const title = trigger.dataset.modalTitle || "";
+  const label = trigger.dataset.modalLabel || "Продукт";
+  const text = trigger.dataset.modalText || "";
+
+  productModalTitle.textContent = title;
+  productModalLabel.textContent = label;
+  productModalContent.innerHTML = formatModalText(text);
+
+  productModal.classList.add("is-open");
+  productModal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("video-open");
+}
+
+function closeProductModalHandler() {
+  productModal.classList.remove("is-open");
+  productModal.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("video-open");
+}
+
+productModalTriggers.forEach((trigger) => {
+  trigger.addEventListener("click", () => openProductModal(trigger));
+});
+
+if (closeProductModal) {
+  closeProductModal.addEventListener("click", closeProductModalHandler);
+}
+
+if (productModal) {
+  productModal.addEventListener("click", (event) => {
+    if (event.target === productModal) {
+      closeProductModalHandler();
+    }
+  });
+}
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && productModal.classList.contains("is-open")) {
+    closeProductModalHandler();
+  }
+});
